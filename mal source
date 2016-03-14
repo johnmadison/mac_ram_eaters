@@ -1,0 +1,147 @@
+THESE ARE ALL DIFFERENT AND SEPERATE PROGRAMS. 
+COPY AND PASTE INTO YOUR PREFERRED COMPILER/IDE
+
+single thread CALLOC program
+
+#include <unistd.h>
+#include <memory.h>
+#define MB 1024 * 1024
+int main() {
+    while (1) {
+        unsigned long *p = malloc( 100*MB );
+        memset(p,0, 100*MB );
+        sleep(1);
+    }
+}
+
+//
+//  main.c
+//  mallocmulti
+//
+//  Created by John Madison on 3/12/16.
+//  Copyright (c) 2016 cmu. All rights reserved.
+//
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <memory.h>
+
+#define NUM_THREADS 3
+#define MB 1024 * 1024
+
+/* create thread argument struct for thr_func() */
+typedef struct _thread_data_t {
+    int tid;
+    double stuff;
+} thread_data_t;
+
+/* thread function */
+void *thr_func(void *arg) {
+    thread_data_t *data = (thread_data_t *)arg;
+    
+    while (1)
+    {
+    printf("ALL YOUR BASE ARE BELONG TO US: %d\n", data->tid);
+        unsigned long *p = malloc( 100*MB );
+        memset(p,0, 100*MB );
+    }
+    
+}
+
+int main(int argc, char **argv) {
+    pthread_t thr[NUM_THREADS];
+    int i, rc;
+    /* create a thread_data_t argument array */
+    thread_data_t thr_data[NUM_THREADS];
+    
+    /* create threads */
+    for (i = 0; i < NUM_THREADS; ++i) {
+        thr_data[i].tid = i;
+        if ((rc = pthread_create(&thr[i], NULL, thr_func, &thr_data[i]))) {
+            fprintf(stderr, "error: pthread_create, rc: %d\n", rc);
+            return EXIT_FAILURE;
+        }
+    }
+    /* block until all threads complete */
+    for (i = 0; i < NUM_THREADS; ++i) {
+        pthread_join(thr[i], NULL);
+    }
+    
+    return EXIT_SUCCESS;
+}
+
+
+//
+//  main.c
+//  mallocmulti WITH FIB NUMBERS
+//
+//  Created by John Madison on 3/12/16.
+//  Copyright (c) 2016 cmu. All rights reserved.
+//
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <memory.h>
+
+#define NUM_THREADS 3
+#define MB 1024 * 1024
+
+void fib(n)
+{
+    int count, t1=0, t2=1, display=0;
+
+    printf("Fibonacci Series: %d+%d+", t1, t2); /* Displaying first two terms */
+    count=2;    /* count=2 because first two terms are already displayed. */
+    while (count<n)
+    {
+        display=t1+t2;
+        t1=t2;
+        t2=display;
+        ++count;
+        printf("%d+",display);
+    }
+}
+
+/* create thread argument struct for thr_func() */
+typedef struct _thread_data_t {
+    int tid;
+    double stuff;
+} thread_data_t;
+
+/* thread function */
+void *thr_func(void *arg) {
+    thread_data_t *data = (thread_data_t *)arg;
+    
+    while (1)
+    {
+    printf("ALL YOUR BASE ARE BELONG TO US: %d\n", data->tid);
+        unsigned long *p = malloc( 100*MB );
+        memset(p,0, 100*MB );
+        fib(100);
+    }
+    
+}
+
+int main(int argc, char **argv) {
+    pthread_t thr[NUM_THREADS];
+    int i, rc;
+    /* create a thread_data_t argument array */
+    thread_data_t thr_data[NUM_THREADS];
+    
+    /* create threads */
+    for (i = 0; i < NUM_THREADS; ++i) {
+        thr_data[i].tid = i;
+        if ((rc = pthread_create(&thr[i], NULL, thr_func, &thr_data[i]))) {
+            fprintf(stderr, "error: pthread_create, rc: %d\n", rc);
+            return EXIT_FAILURE;
+        }
+    }
+    /* block until all threads complete */
+    for (i = 0; i < NUM_THREADS; ++i) {
+        pthread_join(thr[i], NULL);
+    }
+    
+    return EXIT_SUCCESS;
+}
